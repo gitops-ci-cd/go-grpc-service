@@ -26,6 +26,9 @@ on:
         default: ThingResponse
         required: true
 
+permissions:
+  contents: write
+
 name: Cookiecutter
 
 jobs:
