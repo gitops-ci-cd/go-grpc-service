@@ -5,10 +5,10 @@ def pluralize(word):
     p = inflect.engine()
     return p.plural(word)
 
-def main():
-    # Extend Jinja2 environment
-    env = Environment(loader=FileSystemLoader('.'))
+def add_custom_filters():
+    from cookiecutter.generate import environment
+    env = environment()
     env.filters['pluralize'] = pluralize
 
-if __name__ == '__main__':
-    main()
+if __name__ == "__main__":
+    add_custom_filters()
