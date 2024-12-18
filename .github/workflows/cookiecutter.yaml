@@ -26,6 +26,8 @@ on:
         default: ThingResponse
         required: true
 
+name: Cookiecutter
+
 jobs:
   make:
     name: Make a cookie
