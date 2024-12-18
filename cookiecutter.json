@@ -6,5 +6,9 @@
   "proto_service": "ThingService",
   "proto_rpc": "Fetch",
   "proto_message_request": "ThingRequest",
-  "proto_message_response": "ThingResponse"
+  "proto_message_response": "ThingResponse",
+
+  "cookiecutter": {
+    "extensions": ["filters"]
+  }
 }
