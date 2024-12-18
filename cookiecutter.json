@@ -11,5 +11,5 @@
   "cookiecutter": {
     "extensions": ["filters"]
   },
-  "_extensions": ["filters.setup"]
+  "_extensions": ["filters.CustomExtension"]
 }
