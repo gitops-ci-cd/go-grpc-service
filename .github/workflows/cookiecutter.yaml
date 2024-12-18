@@ -68,23 +68,17 @@ jobs:
     name: Bake the cookie
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-        with:
-          sparse-checkout: |
-            .git
       - uses: actions/download-artifact@v4
         with:
           name: cookie
       - name: Reinitialize git repository
         shell: bash
-        # Reinitialize git after scaffolding this repository.
-        # We use `git checkout --orphan` to create a branch in a git init-like state.
-        # By force pushing this we end up with a new clean git history.
         run: |
-          git sparse-checkout disable
           git config --global user.email "$GITHUB_ACTOR@users.noreply.github.com"
           git config --global user.name "$GITHUB_ACTOR"
-          git checkout --orphan temp
+          git init
           git add .
-          git commit -am "Initialized from cookiecutter"
-          git push origin temp:main -f
+          git commit -m "Initialized from cookiecutter"
+          git branch -M main
+          git remote add origin git@github.com:$GITHUB_REPOSITORY.git
+          git push -u -f origin main
