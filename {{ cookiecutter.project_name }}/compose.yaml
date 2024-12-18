@@ -7,7 +7,7 @@ services:
     stdin_open: true
     build:
       context: .
-      target: builder
+      target: deps
     entrypoint: go
     command: help
     volumes:
@@ -23,7 +23,7 @@ services:
     stdin_open: true
     build:
       context: .
-      target: builder
+      target: deps
     entrypoint: go
     command: run ./cmd/server/main.go
     ports:
@@ -44,30 +44,35 @@ services:
           target: /usr/src/app/go.sum
     volumes:
       - gomod:/go/pkg/mod:cached
+    depends_on:
+      - install
 
   protoc:
     image: ghcr.io/gitops-ci-cd/protoc:latest
     entrypoint: protoc
     command:
       - --proto_path=./proto
-      - --go_opt=module=github.com/gitops-ci-cd/schema
+      - --go_opt=module=github.com/{{ cookiecutter.project_owner }}/schema
       - --go_out=./internal/gen/pb
-      - --go-grpc_opt=module=github.com/gitops-ci-cd/schema
+      - --go-grpc_opt=module=github.com/{{ cookiecutter.project_owner }}/schema
       - --go-grpc_out=./internal/gen/pb
-      - ./proto/com/acme/schema/v1/thing.proto
+      - {{ cookiecutter.proto_file }}
     volumes:
       - .:/usr/src/app:delegated
 
   install:
     <<: *go
+    profiles: ["tasks"]
     command: mod tidy
 
   lint:
     <<: *go
+    profiles: ["tasks"]
     command: vet ./...
 
   test:
     <<: *go
+    profiles: ["tasks"]
     command: test ./...
 
 volumes:

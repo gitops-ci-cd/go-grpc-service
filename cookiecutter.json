@@ -1,0 +1,10 @@
+{
+  "project_owner": "owner",
+  "project_name": "repo",
+  "resource": "thing",
+  "proto_file": "./proto/com/acme/schema/v1/thing.proto",
+  "proto_service": "ThingService",
+  "proto_rpc": "Fetch",
+  "proto_message_request": "ThingRequest",
+  "proto_message_response": "ThingResponse"
+}

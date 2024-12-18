@@ -1,0 +1,2 @@
+cookiecutter>=2.6.0
+inflect>=7.4.0

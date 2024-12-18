@@ -12,8 +12,8 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 
-	pb "github.com/gitops-ci-cd/go-grpc-service/internal/gen/pb/v1"
-	"github.com/gitops-ci-cd/go-grpc-service/internal/things"
+	pb "github.com/{{ cookiecutter.project_owner }}/{{ cookiecutter.project_name }}/internal/gen/pb/v1"
+	"github.com/{{ cookiecutter.project_owner }}/{{ cookiecutter.project_name }}/internal/{{ cookiecutter.resource|plurlize }}"
 )
 
 func main() {
@@ -54,7 +54,7 @@ func run(port string) error {
 	)
 
 	// Register the service
-	pb.RegisterThingServiceServer(server, things.NewThingServiceHandler())
+	pb.Register{{ cookiecutter.proto_service }}Server(server, {{ cookiecutter.resource|pluralize }}.New{{ cookiecutter.proto_service }}Handler())
 
 	// Register reflection service for debugging
 	reflection.Register(server)
@@ -80,6 +80,7 @@ func run(port string) error {
 	return nil
 }
 
+// loggingInterceptor provides structured logging for gRPC requests
 func loggingInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
 	start := time.Now()
 	res, err := handler(ctx, req)

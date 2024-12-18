@@ -1,4 +1,4 @@
-module github.com/gitops-ci-cd/go-grpc-service
+module github.com/{{ cookiecutter.project_owner }}/{{ cookiecutter.project_name }}
 
 go 1.23.4
 
