@@ -65,7 +65,7 @@ jobs:
           path: ${{ env.PROJECT_FOLDER }}/**
   bake:
     needs: make
-    name: Bake a cookie
+    name: Bake the cookie
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
