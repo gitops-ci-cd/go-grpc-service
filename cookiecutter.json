@@ -10,5 +10,6 @@
 
   "cookiecutter": {
     "extensions": ["filters"]
-  }
+  },
+  "_extensions": ["filters.pluralize"]
 }
