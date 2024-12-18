@@ -80,5 +80,5 @@ jobs:
           git add .
           git commit -m "Initialized from cookiecutter"
           git branch -M main
-          git remote add origin git@github.com:$GITHUB_REPOSITORY.git
+          git remote add origin https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git
           git push -u -f origin main
