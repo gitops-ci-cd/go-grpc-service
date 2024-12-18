@@ -1,4 +1,4 @@
-package {{ cookiecutter.resource|plurlize }}
+package {{ cookiecutter.resource|pluralize }}
 
 import (
 	"context"

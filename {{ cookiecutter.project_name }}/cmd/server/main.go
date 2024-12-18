@@ -13,7 +13,7 @@ import (
 	"google.golang.org/grpc/reflection"
 
 	pb "github.com/{{ cookiecutter.project_owner }}/{{ cookiecutter.project_name }}/internal/gen/pb/v1"
-	"github.com/{{ cookiecutter.project_owner }}/{{ cookiecutter.project_name }}/internal/{{ cookiecutter.resource|plurlize }}"
+	"github.com/{{ cookiecutter.project_owner }}/{{ cookiecutter.project_name }}/internal/{{ cookiecutter.resource|pluralize }}"
 )
 
 func main() {
