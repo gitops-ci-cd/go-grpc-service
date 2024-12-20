@@ -37,6 +37,9 @@ services:
           path: ./internal/
           target: /usr/src/app/internal/
         - action: sync+restart
+          path: ./pkg/
+          target: /usr/src/app/pkg/
+        - action: sync+restart
           path: ./go.mod
           target: /usr/src/app/go.mod
         - action: sync+restart
@@ -48,6 +51,7 @@ services:
       - install
 
   protoc:
+    profiles: [tasks]
     image: ghcr.io/gitops-ci-cd/protoc:latest
     entrypoint: protoc
     command:
@@ -62,17 +66,17 @@ services:
 
   install:
     <<: *go
-    profiles: ["tasks"]
+    profiles: [tasks]
     command: mod tidy
 
   lint:
     <<: *go
-    profiles: ["tasks"]
+    profiles: [tasks]
     command: vet ./...
 
   test:
     <<: *go
-    profiles: ["tasks"]
+    profiles: [tasks]
     command: test ./...
 
 volumes:
