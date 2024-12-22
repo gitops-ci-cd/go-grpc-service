@@ -9,23 +9,25 @@ import (
 	pb "github.com/{{ cookiecutter.project_owner }}/{{ cookiecutter.project_name }}/internal/_gen/pb/v1"
 )
 
-// {{ cookiecutter.resource }}Handler implements the {{ cookiecutter.proto_service }}Server interface.
-type {{ cookiecutter.resource }}Handler struct {
-	pb.Unimplemented{{ cookiecutter.proto_service }}Server // Embedding for forward compatibility
+// Handler implements the {{ cookiecutter.proto_service }}Server interface
+type Handler struct {
+	// Embedding for forward compatibility
+	pb.Unimplemented{{ cookiecutter.proto_service }}Server
+	Service service
 }
 
-// New{{ cookiecutter.proto_service }}Handler creates a new instance of {{ cookiecutter.resource }}Handler.
-func New{{ cookiecutter.proto_service }}Handler() pb.{{ cookiecutter.proto_service }}Server {
-	return &{{ cookiecutter.resource }}Handler{}
+// Register associates the handler with the given gRPC server
+func (h *Handler) Register(server *grpc.Server) {
+	pb.Register{{ cookiecutter.proto_service }}Server(server, h)
 }
 
-// {{ cookiecutter.proto_rpc }} handles an RPC request.
-func (h *{{ cookiecutter.resource }}Handler) {{ cookiecutter.proto_rpc }}(ctx context.Context, req *pb.{{ cookiecutter.proto_message_request }}) (*pb.{{ cookiecutter.proto_message_response }}, error) {
+// Todo handles an RPC request.
+func (h *Handler) Todo()(ctx context.Context, req *pb.TodoRequest) (*pb.TodoResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "request cannot be nil")
 	}
 
-	// TODO: Implement the handler logic
+	h.Service.Todo()
 
-	return &pb.{{ cookiecutter.proto_message_response }}{}, nil
+	return &pb.TodoResponse{}, nil
 }

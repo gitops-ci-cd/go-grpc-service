@@ -1,17 +1,13 @@
 package main
 
 import (
-	"context"
-	"fmt"
 	"log/slog"
-	"net"
 	"os"
-	"os/signal"
-	"syscall"
 
 	"google.golang.org/grpc"
 
-	"github.com/{{ cookiecutter.project_owner }}/{{ cookiecutter.project_name }}/internal/services"
+	"github.com/{{ cookiecutter.project_owner }}/{{ cookiecutter.project_name }}/internal/{{ cookiecutter.resource|pluralize }}"
+	"github.com/{{ cookiecutter.project_owner }}/{{ cookiecutter.project_name }}/pkg/io"
 	"github.com/{{ cookiecutter.project_owner }}/{{ cookiecutter.project_name }}/pkg/telemetry"
 )
 
@@ -36,72 +32,32 @@ func init() {
 	})))
 }
 
+const defaultPort = "50051"
+
 // main is the entry point for the server
 func main() {
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "50051"
+		port = defaultPort
 	}
 
-	// Run the server
-	if err := run(":"+port, services.Register); err != nil {
+	opts := []grpc.ServerOption{
+		grpc.ChainUnaryInterceptor(
+			io.TimestampInjector,
+			telemetry.LoggingInterceptor,
+		),
+	}
+	server := grpc.NewServer(opts...)
+
+	// Create and populate the registry with gRPC services that satisfy the io.Registerable interface
+	registry := &io.Registry{}
+	registry.Add(&{{ cookiecutter.resource|pluralize }}.Handler{Service: &{{ cookiecutter.resource|pluralize }}.Service{}})
+	registry.RegisterAll(server)
+
+	if err := io.Run(":"+port, server); err != nil {
 		slog.Error("Server terminated", "error", err)
 		os.Exit(1)
 	} else {
 		slog.Warn("Server stopped")
 	}
-}
-
-// run sets up and starts the gRPC server
-func run(port string, registerFunc func(*grpc.Server)) error {
-	// Create a TCP listener
-	listener, err := net.Listen("tcp", port)
-	if err != nil {
-		return fmt.Errorf("could not create tcp listener on port %s: %w", port, err)
-	}
-	defer listener.Close()
-
-	// Create a new gRPC server
-	server := grpc.NewServer(
-		grpc.UnaryInterceptor(telemetry.LoggingInterceptor),
-	)
-
-	// Register services using the provided function
-	registerFunc(server)
-
-	// Run the server in a goroutine to allow for graceful shutdown
-	ctx := setupSignalHandler()
-	go func() {
-		slog.Info("Server listening...", "port", port)
-		if err := server.Serve(listener); err != nil {
-			slog.Error("gRPC server failed", "error", err)
-		}
-	}()
-
-	// Run the server in a goroutine to allow for graceful shutdown
-	go func() {
-		slog.Info("Server listening...", "port", port)
-		if err := server.Serve(listener); err != nil {
-			slog.Error("Failed to serve", "error", err)
-			cancel()
-		}
-	}()
-
-	// Wait for termination signal
-	<-ctx.Done()
-	slog.Warn("Server shutting down gracefully...")
-	server.GracefulStop()
-
-	return nil
-}
-
-// setupSignalHandler creates a cancellable context for signal handling
-func setupSignalHandler() context.Context {
-	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
-	go func() {
-		<-ctx.Done()
-		slog.Warn("Received termination signal")
-		stop()
-	}()
-	return ctx
 }

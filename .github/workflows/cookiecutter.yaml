@@ -13,18 +13,6 @@ on:
         description: gRPC service name within the proto file
         default: ThingService
         required: true
-      proto_rpc:
-        description: rpc method within the gRPC service
-        default: Fetch
-        required: true
-      proto_message_request:
-        description: message used as request
-        default: ThingRequest
-        required: true
-      proto_message_response:
-        description: message used as response
-        default: ThingResponse
-        required: true
 
 permissions:
   contents: write
@@ -51,10 +39,7 @@ jobs:
             "project_name=${{ github.event.repository.name }}" \
             "resource=${{ github.event.inputs.resource }}" \
             "proto_file=${{ github.event.inputs.proto_file }}" \
-            "proto_service=${{ github.event.inputs.proto_service }}" \
-            "proto_rpc=${{ github.event.inputs.proto_rpc }}" \
-            "proto_message_request=${{ github.event.inputs.proto_message_request }}" \
-            "proto_message_response=${{ github.event.inputs.proto_message_response }}"
+            "proto_service=${{ github.event.inputs.proto_service }}"
           )
       - run: |
           echo "PROJECT_FOLDER=$(ls -d ./cookie/* | head -n 1)" >> $GITHUB_ENV
